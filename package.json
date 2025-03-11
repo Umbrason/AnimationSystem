@@ -1,0 +1,15 @@
+{
+  "name": "com.umbrason.animationsystem",
+  "version": "1.0.0",
+  "displayName": "AnimationSystem",
+  "description": "",
+  "keywords": [    
+  ],
+  "author": {
+    "name": "Umbrason"
+  },
+  "hideInEditor": false,
+  "dependencies": {
+    "com.umbrason.umbrasonsutils" : "1.0.0"
+  }
+}

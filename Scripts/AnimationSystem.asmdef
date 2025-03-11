@@ -1,0 +1,16 @@
+{
+    "name": "AnimationSystem",
+    "rootNamespace": "",
+    "references": [
+        "GUID:cf019c9dc6db4da4aa07ca4c8a3a2040"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
