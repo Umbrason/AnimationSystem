@@ -6,7 +6,6 @@ using UnityEngine.Playables;
 
 public class AnimationMixerDriverPlayable : PlayableBehaviour
 {
-
     private List<BlendedMovementAnimation.AnimationBlendPart> m_clips;
     public List<BlendedMovementAnimation.AnimationBlendPart> Clips
     {

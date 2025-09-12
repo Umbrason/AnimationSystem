@@ -36,6 +36,24 @@ public class CodeAnimator : MonoBehaviour
                 animator.layerPlayable.SetInputWeight(Index, m_animation == null ? 0 : m_weight);
             }
         }
+
+        public float TransitionDuration
+        {
+            get => TransitionProxy.transitionDuration;
+            set => TransitionProxy.transitionDuration = value;
+        }
+
+        ScriptPlayable<TransitionProxyPlayable> m_transitionProxyPlayable;
+        ScriptPlayable<TransitionProxyPlayable> TransitionProxyPlayable
+        {
+            get
+            {
+                if (m_transitionProxyPlayable.IsNull())
+                    m_transitionProxyPlayable = ScriptPlayable<TransitionProxyPlayable>.Create(animator.graph);
+                return m_transitionProxyPlayable;
+            }
+        }
+        TransitionProxyPlayable TransitionProxy => TransitionProxyPlayable.GetBehaviour();
         private AvatarMask layerMask;
         public IReadOnlyCollection<Transform> m_animatedTransforms;
         public IReadOnlyCollection<Transform> AnimatedTransforms
@@ -65,18 +83,12 @@ public class CodeAnimator : MonoBehaviour
             {
                 if (m_animation == value) return;
                 if (m_animation != null)
-                {
-                    /* animator.layerPlayable.GetInput(Index).Destroy(); */ //TODO: check how not deleting the old animation playables affects performance
                     animator.layerPlayable.DisconnectInput(Index);
-                }
                 m_animation = value;
-                if (m_animation != null)
-                {
-                    if (!animator.cached_playables.TryGetValue(m_animation, out var playable))
-                        playable = m_animation.CreatePlayable(animator.graph);
-                    animator.layerPlayable.ConnectInput(Index, playable, 0);
-                }
-                animator.layerPlayable.SetInputWeight(Index, m_animation == null ? 0 : m_weight);
+                if (!animator.cached_playables.TryGetValue(m_animation, out var playable))
+                    playable = m_animation?.CreatePlayable(animator.graph) ?? Playable.Null;
+                TransitionProxy.CurrentPlayable = playable;
+                animator.layerPlayable.ConnectInput(Index, TransitionProxyPlayable, 0);
             }
         }
         public AnimationLayer(CodeAnimator animator, int index, string name, IAnimation animation = null, IReadOnlyCollection<Transform> animatedTransforms = null)
