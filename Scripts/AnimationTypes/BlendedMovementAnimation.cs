@@ -5,8 +5,11 @@ using UnityEngine.Playables;
 
 public class BlendedMovementAnimation : IAnimation
 {
-    private Func<Vector2> animationKeyGetter;
+    private readonly Func<Vector2> animationKeyGetter;
     private readonly List<AnimationBlendPart> m_clips = new();
+
+    public float? ExitTransitionDuration { get; set; }
+    float? IAnimation.ExitTransitionDuration { get => ExitTransitionDuration; }
 
     public BlendedMovementAnimation(Func<Vector2> AnimationKeyGetter, AnimationClip forward, AnimationClip back, AnimationClip left, AnimationClip right)
     : this(AnimationKeyGetter,
@@ -36,7 +39,7 @@ public class BlendedMovementAnimation : IAnimation
 
     public Playable CreatePlayable(PlayableGraph graph)
     {
-        var animationMixerDriverPlayable = ScriptPlayable<AnimationMixerDriverPlayable>.Create(graph, 1);
+        var animationMixerDriverPlayable = ScriptPlayable<Animation2DMixerDriverPlayable>.Create(graph, 1);
         var animationMixerDriver = animationMixerDriverPlayable.GetBehaviour();
         animationMixerDriver.Clips = m_clips;
         animationMixerDriver.KeyGetter = () => this.animationKeyGetter?.Invoke() ?? Vector2.up;

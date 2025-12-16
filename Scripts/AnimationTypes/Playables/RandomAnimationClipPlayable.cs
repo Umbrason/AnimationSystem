@@ -44,6 +44,7 @@ public class RandomAnimationClipPlayable : PlayableBehaviour
         playable.SetPropagateSetTime(true);
         playable.SetOutputCount(1);
         playable.SetInputCount(1);
+        playable.SetInputWeight(0, 1f);
     }
 
     public override void OnPlayableDestroy(Playable playable)

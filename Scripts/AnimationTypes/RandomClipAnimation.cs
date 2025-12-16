@@ -3,6 +3,9 @@ using UnityEngine.Playables;
 
 public class RandomClipAnimation : IAnimation
 {
+    public float? ExitTransitionDuration { get; set; }
+    float? IAnimation.ExitTransitionDuration { get => ExitTransitionDuration; }
+
     public RandomClipAnimation(AnimationClip[] clips)
     {
         Clips = clips;

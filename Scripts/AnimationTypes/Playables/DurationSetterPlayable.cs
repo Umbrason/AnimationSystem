@@ -29,8 +29,9 @@ public class DurationSetterPlayable : PlayableBehaviour
     public override void OnPlayableCreate(Playable playable)
     {
         ownPlayable = playable;
-        playable.SetInputCount(0);
-        playable.SetOutputCount(0);
+        playable.SetInputCount(1);
+        playable.SetOutputCount(1);
+        playable.SetInputWeight(0, 1f);
     }
 
     public override void PrepareFrame(Playable playable, FrameData info)

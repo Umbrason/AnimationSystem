@@ -2,6 +2,9 @@ using UnityEngine.Playables;
 
 public class FixedDurationAnimation : IAnimation
 {
+    public float? ExitTransitionDuration { get; set; }
+    float? IAnimation.ExitTransitionDuration { get => ExitTransitionDuration; }
+
     public FixedDurationAnimation(IAnimation animation, float duration)
     {
         this.Animation = animation;

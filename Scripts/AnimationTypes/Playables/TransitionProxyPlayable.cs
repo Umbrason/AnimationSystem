@@ -21,7 +21,7 @@ public class TransitionProxyPlayable : PlayableBehaviour
             this.start = start;
             this.duration = duration;
         }
-        public readonly float T => Mathf.Clamp01((Time.time - start) / duration);
+        public readonly float T => duration == 0 ? 1f : Mathf.Clamp01((Time.time - start) / duration);
     }
     public TransitionProxyPlayable() { }
 
@@ -36,7 +36,7 @@ public class TransitionProxyPlayable : PlayableBehaviour
         {
             if (CurrentPlayable.Equals(value)) return;
             transitionMixer.AddInput(value, 0, 0);
-            if (transitionDuration > 0) TransitionStack.Add(new(Time.time, transitionDuration));
+            TransitionStack.Add(new(Time.time, transitionDuration));
         }
     }
 
@@ -49,6 +49,7 @@ public class TransitionProxyPlayable : PlayableBehaviour
         playable.SetInputCount(1);
         playable.SetOutputCount(1);
         playable.ConnectInput(0, transitionMixer, 0);
+        playable.SetInputWeight(0, 1f);
         transitionMixer.SetPropagateSetTime(true);
         transitionMixer.SetInputCount(1); //initialize with an empty base layer so the first animation is transitioned in properly
     }

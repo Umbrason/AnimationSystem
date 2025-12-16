@@ -33,14 +33,16 @@ public class CodeAnimator : MonoBehaviour
             set
             {
                 m_weight = value;
-                animator.layerPlayable.SetInputWeight(Index, m_animation == null ? 0 : m_weight);
+                UpdateWeight();
             }
         }
 
-        public float TransitionDuration
+        private void UpdateWeight() => animator.layerPlayable.SetInputWeight(Index, m_weight);
+
+        public float DefaultTransitionDuration
         {
-            get => TransitionProxy.transitionDuration;
-            set => TransitionProxy.transitionDuration = value;
+            get;
+            set;
         }
 
         ScriptPlayable<TransitionProxyPlayable> m_transitionProxyPlayable;
@@ -82,13 +84,15 @@ public class CodeAnimator : MonoBehaviour
             set
             {
                 if (m_animation == value) return;
-                if (m_animation != null)
-                    animator.layerPlayable.DisconnectInput(Index);
+                /* if (m_animation != null)
+                    animator.layerPlayable.DisconnectInput(Index); */
+                var oldAnim = m_animation;
                 m_animation = value;
-                if (!animator.cached_playables.TryGetValue(m_animation, out var playable))
+                if (m_animation == null || !animator.cached_playables.TryGetValue(m_animation, out var playable))
                     playable = m_animation?.CreatePlayable(animator.graph) ?? Playable.Null;
+                TransitionProxy.transitionDuration = oldAnim?.ExitTransitionDuration ?? DefaultTransitionDuration;
                 TransitionProxy.CurrentPlayable = playable;
-                animator.layerPlayable.ConnectInput(Index, TransitionProxyPlayable, 0);
+                UpdateWeight();
             }
         }
         public AnimationLayer(CodeAnimator animator, int index, string name, IAnimation animation = null, IReadOnlyCollection<Transform> animatedTransforms = null)
@@ -98,6 +102,8 @@ public class CodeAnimator : MonoBehaviour
             this.animator = animator;
             this.Animation = animation;
             this.AnimatedTransforms = animatedTransforms;
+            animator.layerPlayable.ConnectInput(Index, TransitionProxyPlayable, 0);
+            UpdateWeight();
         }
     }
     private Cached<Animator> cached_TargetAnimator = new(Cached<Animator>.GetOption.Children);
@@ -120,6 +126,7 @@ public class CodeAnimator : MonoBehaviour
     {
         if (GetLayer(name) != null) throw new ArgumentException($"Layer {name} already exists!");
         layerPlayable.SetInputCount(Layers.Count + 1);
+        layerPlayable.SetInputWeight(Layers.Count, 1f);
         var layerItem = new AnimationLayer(this, Layers.Count, name, animation, animatedTransforms);
         m_Layers.Add(layerItem);
         return layerItem;

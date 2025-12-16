@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
 
-public class AnimationMixerDriverPlayable : PlayableBehaviour
+public class Animation2DMixerDriverPlayable : PlayableBehaviour
 {
     private List<BlendedMovementAnimation.AnimationBlendPart> m_clips;
     public List<BlendedMovementAnimation.AnimationBlendPart> Clips
@@ -29,7 +29,7 @@ public class AnimationMixerDriverPlayable : PlayableBehaviour
 
     private AnimationMixerPlayable mixer;
     public Func<Vector2> KeyGetter { get; set; }
-    public AnimationMixerDriverPlayable() { }
+    public Animation2DMixerDriverPlayable() { }
 
     public override void OnPlayableCreate(Playable playable)
     {
@@ -40,6 +40,7 @@ public class AnimationMixerDriverPlayable : PlayableBehaviour
         playable.SetInputCount(1);
         playable.SetOutputCount(1);
         playable.ConnectInput(0, mixer, 0);
+        playable.SetInputWeight(0, 1f);
     }
 
     public override void OnPlayableDestroy(Playable playable)
